@@ -16,19 +16,13 @@ type Metrics struct {
 	Items []Metric `json:"metrics"`
 }
 
-func Init() Metrics {
+func Get(host string) Metrics {
 	metrics := Metrics{}
 	metrics.Items = []Metric{
-		{"nodeping","status","/nodeping","get"},
-		{"nan","status","/someOther","get"},
+		{"nodeping","status",host + "/nodeping","get"},
+		{"Not used","status",host + "/someOther","get"},
 	}
 	return metrics
-}
-
-func New(key string, typ string, endpoint string, method string) (*Metric) {
-	return &Metric {
-		key, typ, endpoint, method,
-	}
 }
 
 func (m *Metric) Json() string {

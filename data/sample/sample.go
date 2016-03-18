@@ -26,3 +26,13 @@ func (m *Sample) Json() string {
 	result, _ := json.Marshal(m)
 	return string(result)
 }
+
+func ConvertStatus(value int) string{
+	switch value {
+	case 1:
+		return "ok"
+	default:
+		return "error"
+
+	}
+}

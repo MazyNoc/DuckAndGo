@@ -15,31 +15,34 @@ type single struct {
 var instantiated *single
 var once sync.Once
 
-func New() *single {
+func Get() *single {
 	once.Do(func() {
 		instantiated = &single{}
-		db, _ := sql.Open("sqlite3", "./foo.db")
-		db.Exec("create table nodeping (id INTEGER PRIMARY KEY AUTOINCREMENT, value int, timestamp date)")
+		db, err := sql.Open("sqlite3", "./foo.db")
+		if err != nil {
+			panic("Can't open the database, exiting")
+		}
+
+		db.Exec("create table nodeping (id INTEGER PRIMARY KEY AUTOINCREMENT, value TEXT, timestamp date)")
 		instantiated.db = db
-		log.Println("singleton executed")
+		log.Println("singleton created")
 	})
 	return instantiated
 }
 
 func GetNodePing() sample.Sample {
-	var sample = sample.Sample{}
-	sample.Key = "nodeping"
-	sample.Typ = "status"
+	sample := sample.Sample{Key:"nodeping", Typ:"status"}
+	rows, _ := Get().db.Query("select value, timestamp from nodeping order by id desc limit 1")
+	defer rows.Close()
 
-	rows, _ := New().db.Query("select value, timestamp from nodeping order by id desc limit 1")
 	if (rows.Next()) {
 		rows.Scan(&sample.Data.Status, &sample.Data.Timestamp)
 	}
-	rows.Close()
 	return sample
 }
 
-func SetNodePing(nodeping sample.Sample) {
-	stmt, _ := New().db.Prepare("insert into nodeping (value, timestamp) values (?,?)")
-	stmt.Exec(nodeping.Data.Status, nodeping.Data.Timestamp)
+func SetNodePing(nodePing sample.Sample) {
+	stmt, _ := Get().db.Prepare("insert into nodeping (value, timestamp) values (?,?)")
+	data := nodePing.Data;
+	stmt.Exec(data.Status, data.Timestamp)
 }
