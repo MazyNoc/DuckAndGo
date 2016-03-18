@@ -35,12 +35,10 @@ func nodepingHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func uploadNodepingHandler(w http.ResponseWriter, r *http.Request) {
-	log.Print("nodeping")
-	var t upload.Nodeping
+	var temp upload.Nodeping
 	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&t)
-	log.Println(t)
-	nodePing := sample.Sample{"nodeping", "status", sample.Datum{strconv.Itoa(t.Value), time.Now()}}
+	decoder.Decode(&temp)
+	nodePing := sample.Sample{"nodeping", "status", sample.Datum{strconv.Itoa(temp.Value), time.Now()}}
 	persistence.SetNodePing(nodePing)
 }
 

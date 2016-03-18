@@ -33,16 +33,12 @@ func New(key string, typ string, endpoint string, method string) (*Metric) {
 
 func (m *Metric) Json() string {
 	log.Println(m)
-	a, err := json.Marshal(m)
-	log.Println(err)
-	log.Println(a)
-	return string(a)
+	result, _ := json.Marshal(m)
+	return string(result)
 }
 
 func (m *Metrics) Json() string {
 	log.Println(m)
-	a, err := json.Marshal(m)
-	log.Println(err)
-	log.Println(a)
-	return string(a)
+	result, _ := json.Marshal(m)
+	return string(result)
 }

@@ -40,7 +40,6 @@ func GetNodePing() sample.Sample {
 }
 
 func SetNodePing(nodeping sample.Sample) {
-	stmt, err := New().db.Prepare("insert into nodeping (value, timestamp) values (?,?)")
-	log.Println(err)
+	stmt, _ := New().db.Prepare("insert into nodeping (value, timestamp) values (?,?)")
 	stmt.Exec(nodeping.Data.Status, nodeping.Data.Timestamp)
 }
